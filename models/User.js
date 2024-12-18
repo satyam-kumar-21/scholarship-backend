@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+    scholarFormId: { type: mongoose.Schema.Types.ObjectId, ref: 'Scholar', required: false } // scholarFormId is optional
   },
   { timestamps: true }
 );

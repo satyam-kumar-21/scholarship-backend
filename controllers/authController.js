@@ -27,7 +27,42 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Login User
+// // Login User
+// const loginUser = async (req, res) => {
+//   const { email, password } = req.body;
+
+//   const trimmedPassword = password.trim();  // Trim any extra spaces
+//   console.log("Entered Password (after trim):", trimmedPassword);
+
+//   try {
+//     const user = await User.findOne({ email });
+
+//     if (!user) {
+//       console.log("User not found with email:", email);
+//       return res.status(400).json({ message: 'Invalid credentials' });
+//     }
+
+//     // Compare entered password with stored hash
+//     const isMatch = await user.matchPassword(trimmedPassword);
+//     console.log("Password Match Result:", isMatch);
+
+//     if (!isMatch) {
+//       console.log("Password mismatch for email:", email);
+//       return res.status(400).json({ message: 'Invalid credentials' });
+//     }
+
+//     // Generate JWT token if password matches
+//     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+//     console.log("JWT Token:", token);
+//     res.status(200).json({ message: 'Login successful', token,user });
+//   } catch (err) {
+//     console.error("Error during login:", err);
+//     res.status(500).json({ message: 'Server error', error: err.message });
+//   }
+// };
+
+
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -54,12 +89,22 @@ const loginUser = async (req, res) => {
     // Generate JWT token if password matches
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     console.log("JWT Token:", token);
-    res.status(200).json({ message: 'Login successful', token,user });
+
+    // Send response with user object including scholarFormId
+    res.status(200).json({
+      message: 'Login successful',
+      token,
+      user: {
+        ...user.toObject(), // Convert Mongoose document to plain object
+        scholarFormId: user.scholarFormId, // Include scholarFormId explicitly
+      }
+    });
   } catch (err) {
     console.error("Error during login:", err);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
 
 // Forgot Password
 const forgotPassword = async (req, res) => {
